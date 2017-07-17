@@ -26,21 +26,8 @@ namespace letsencrypt_webrole.Services
 
             try
             {
-                //try
-                //{
-                //    store = new X509Store("WebHosting", StoreLocation.LocalMachine);
-                //    store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadWrite);
-                //}
-                //catch (CryptographicException)
-                //{
                 store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadWrite);
-                //}
-                //catch (Exception ex)
-                //{
-                //    Log.Error($"Error encountered while opening certificate store. Error: {@ex}", ex);
-                //    throw new Exception(ex.Message);
-                //}
 
                 Log.Information($"Opened Certificate Store {store.Name}");
 

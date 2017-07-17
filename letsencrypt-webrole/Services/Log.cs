@@ -41,6 +41,7 @@ namespace letsencrypt_webrole.Services
             WriteMessage(message, "ERROR", ConsoleColor.Red);
         }
 
+        [Conditional("DEBUG")]
         public static void Debug(string message)
         {
             WriteMessage(message, "DEBUG", ConsoleColor.Green);

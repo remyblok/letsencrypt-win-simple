@@ -104,9 +104,21 @@ namespace letsencrypt_webrole.Services
         private void Warmup(Uri challengeUrl)
         {
             Log.Information($"Waiting for site to warmup by calling url {challengeUrl}");
-            WebRequest request = WebRequest.Create(challengeUrl);
-            request.Timeout = (int)TimeSpan.FromMinutes(2).TotalMilliseconds;
-            using (request.GetResponse()) { }
+
+            int retry = 0;
+            while (true)
+            {
+                try
+                {
+                    WebRequest request = WebRequest.Create(challengeUrl);
+                    request.Timeout = (int)TimeSpan.FromMinutes(2).TotalMilliseconds;
+                    using (request.GetResponse()) { }
+                    break;
+                }
+                catch when (retry++ < 3)
+                {
+                }
+            }
         }
 
         public void Install(X509Store store, X509Certificate2 certificate)
@@ -171,7 +183,8 @@ namespace letsencrypt_webrole.Services
         private Site GetSite(ServerManager iisManager)
         {
             return iisManager.Sites.FirstOrDefault(s => s.Bindings.Any(b => b.Host == _options.HostName))
-                   ?? iisManager.Sites.First();
+                   ?? iisManager.Sites.FirstOrDefault()
+                   ?? throw new InvalidOperationException("No site could be found in IIS");
         }
 
         private string GetIp(string httpEndpoint, string host)
@@ -244,7 +257,6 @@ namespace letsencrypt_webrole.Services
                 {
                     try
                     {
-
                         Directory.Delete(_folderToDelete, true);
                         break;
                     }
