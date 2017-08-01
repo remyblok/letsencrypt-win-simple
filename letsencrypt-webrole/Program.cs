@@ -15,9 +15,10 @@ namespace letsencrypt_webrole
         private readonly AcmeCertificateService _acmeCertificateService;
         private readonly RenewalService _renewalService;
         private readonly CertificateStoreService _certificateStoreService;
+        private readonly FirewallService _firewallService;
 
         private Program(Options options, AcmeClientService acmeClient, IisService iisService, AcmeCertificateService acmeCertificateService,
-            RenewalService renewalService, CertificateStoreService certificateStoreService)
+            RenewalService renewalService, CertificateStoreService certificateStoreService, FirewallService firewallService)
         {
             _options = options;
             _acmeClient = acmeClient;
@@ -25,6 +26,7 @@ namespace letsencrypt_webrole
             _acmeCertificateService = acmeCertificateService;
             _renewalService = renewalService;
             _certificateStoreService = certificateStoreService;
+            _firewallService = firewallService;
         }
 
         public static int Main(string[] args)
@@ -43,7 +45,7 @@ namespace letsencrypt_webrole
             RenewalService renewalService = new RenewalService(options);
             CertificateStoreService certificateStoreService = new CertificateStoreService(options, iisService);
 
-            Program program = new Program(options, acmeClient, iisService, acmeCertificateService, renewalService, certificateStoreService);
+            Program program = new Program(options, acmeClient, iisService, acmeCertificateService, renewalService, certificateStoreService, firewallService);
             program.Execute();
 
             return 0;
@@ -86,6 +88,9 @@ namespace letsencrypt_webrole
                 _acmeClient.Initialize();
                 _acmeCertificateService.RetrieveNewCertificate();
             }
+
+            if (!_options.DoNotBlockHttp)
+                _firewallService.BlockHttpPort();
 
             _certificateStoreService.InstallCertificate();
 

@@ -57,8 +57,10 @@ namespace letsencrypt_webrole.Services
             finally
             {
                 Log.Information("Closing Certificate Store");
-                ((IDisposable)newCertificate)?.Dispose();
-                ((IDisposable)knownCertificate)?.Dispose();
+                IDisposable disposable = newCertificate as IDisposable;
+                disposable?.Dispose();
+                disposable = knownCertificate as IDisposable;
+                disposable?.Dispose();
                 store?.Close();
             }
         }

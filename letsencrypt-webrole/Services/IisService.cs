@@ -51,7 +51,7 @@ namespace letsencrypt_webrole.Services
             ChallengeFile file = null;
             try
             {
-                file = new ChallengeFile(_options.DoNotBlockHttp ? null : _firewallService, directoryToDelete)
+                file = new ChallengeFile(directoryToDelete)
                 {
                     Path = answerPath,
                     Uri = new Uri(httpChallenge.FileUrl)
@@ -233,12 +233,10 @@ namespace letsencrypt_webrole.Services
 
     class ChallengeFile : IDisposable
     {
-        private readonly FirewallService _firewallService;
         private readonly string _folderToDelete;
 
-        public ChallengeFile(FirewallService firewallService, string folderToDelete)
+        public ChallengeFile(string folderToDelete)
         {
-            _firewallService = firewallService;
             _folderToDelete = folderToDelete;
         }
 
@@ -266,8 +264,6 @@ namespace letsencrypt_webrole.Services
                     }
                 }
             }
-
-            _firewallService?.BlockHttpPort();
         }
     }
 }
