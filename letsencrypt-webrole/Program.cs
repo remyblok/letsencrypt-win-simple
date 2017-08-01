@@ -51,13 +51,19 @@ namespace letsencrypt_webrole
 
         private static void FixCosturaPath()
         {
+            // need to fix the path of costura, 
+            // because unmanaged dlls are expexted in "x64"-dir not in "64"-dir
+            // or in "x86"-dir and not in "32"-dir
+
             Type assemblyLoaderType = Type.GetType("Costura.AssemblyLoader");
             FieldInfo tempField = assemblyLoaderType.GetField("tempBasePath", BindingFlags.NonPublic | BindingFlags.Static);
             string tempPath = (string)tempField.GetValue(null);
 
+
             string bitness = (IntPtr.Size == 8) ? "64" : "32";
+            string xBitness = (IntPtr.Size == 8) ? "x64" : "x86";
             string old64Path = Path.Combine(tempPath, bitness);
-            string x64Path = Path.Combine(tempPath, "x" + bitness);
+            string x64Path = Path.Combine(tempPath, xBitness);
 
             if (Directory.Exists(x64Path))
                 Directory.Delete(x64Path, true);
