@@ -30,10 +30,19 @@ namespace letsencrypt_webrole.Services
                 return false;
 
             Log.Information($"Validating current certificate {_options.WellKnownFilePaths[WellKnownFile.CrtDer]}");
-            X509Certificate2 cert = new X509Certificate2(_options.WellKnownFilePaths[WellKnownFile.CrtDer]);
-            bool isvalid = cert.NotBefore.AddDays(_options.RenewalDays) > DateTime.UtcNow;
-            Log.Information($"certificat is {(isvalid ? "" : "NOT ")}valid. Renew at {cert.NotBefore.AddDays(_options.RenewalDays):yyyy-MM-dd}. Valid through {cert.NotAfter:yyyy-MM-dd}");
-            return isvalid;
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(_options.WellKnownFilePaths[WellKnownFile.CrtDer]);
+                bool isvalid = cert.NotBefore.AddDays(_options.RenewalDays) > DateTime.UtcNow;
+                Log.Information($"Certificat is {(isvalid ? "" : "NOT ")}valid. Renew at {cert.NotBefore.AddDays(_options.RenewalDays):yyyy-MM-dd}. Valid through {cert.NotAfter:yyyy-MM-dd}");
+                return isvalid;
+
+            }
+            catch (Exception e)
+            {
+                Log.Information($"Certificate could not be opened: {e.Message}");
+                return false;
+            }
         }
 
         public void RetrieveNewCertificate()
