@@ -7,6 +7,7 @@ using ACMESharp.ACME;
 using ACMESharp.HTTP;
 using ACMESharp.JOSE;
 using ACMESharp.PKI;
+using ACMESharp.PKI.RSA;
 
 namespace letsencrypt_webrole.Services
 {
