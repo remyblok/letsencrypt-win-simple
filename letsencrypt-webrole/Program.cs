@@ -85,8 +85,8 @@ namespace letsencrypt_webrole
 			CertificateStatus status = _acmeCertificateService.IsCurrentCertificateValid();
 			try
 			{
-
-				if (!_options.InstallOnly && status != CertificateStatus.OK)
+				//--renew is more important than --installonly
+				if ((!_options.InstallOnly || _options.Renew) && status != CertificateStatus.OK)
 				{
 					_acmeClient.Initialize();
 					_acmeCertificateService.RetrieveNewCertificate();

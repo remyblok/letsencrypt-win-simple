@@ -36,7 +36,6 @@ namespace letsencrypt_webrole.Services
 				bool isvalid = cert.NotBefore.AddDays(_options.RenewalDays) > DateTime.UtcNow;
 				Log.Information($"Certificat is {(isvalid ? "" : "NOT ")}valid. Renew at {cert.NotBefore.AddDays(_options.RenewalDays):yyyy-MM-dd}. Valid through {cert.NotAfter:yyyy-MM-dd}");
 				return isvalid ? CertificateStatus.OK : CertificateStatus.NeedsRenew;
-
 			}
 			catch (Exception e)
 			{

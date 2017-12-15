@@ -77,7 +77,7 @@ namespace letsencrypt_webrole
 				{WellKnownFile.CrtPfx, Path.Combine(CertificateFolder, $"{HostName}-all.pfx")},
 				{WellKnownFile.AcmeSigner, Path.Combine(WorkingFolder, TestMode ? "staging" : "v01" , "Signer.xml")},
 				{WellKnownFile.AcmeRegistration, Path.Combine(WorkingFolder, TestMode ? "staging" : "v01", "Registration.json")},
-				{WellKnownFile.LogLocation, Path.Combine(logFileFolder, $"{DateTime.UtcNow:yyyyMMdd HHmmss}{(Renew ? " Renew" : "")}.log")},
+				{WellKnownFile.LogLocation, Path.Combine(logFileFolder, $"{DateTime.UtcNow:yyyyMMdd HHmmss}{(Renew ? " Renew" : InstallOnly ? " InstallOnly" : "")}.log")},
 			};
 		}
 	}
