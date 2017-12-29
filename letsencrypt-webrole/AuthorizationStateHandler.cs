@@ -43,7 +43,10 @@ namespace letsencrypt_webrole
 				}
 
 				Log.Information($"Authorization Result: {currentState.Status}");
-				if (currentState.Status != "valid" && ++tries == 3)
+				if (currentState.Status == "valid")
+					return;
+
+				if (++tries == 3)
 					throw new AuthorizationFailedException(currentState);
 			}
 		}
